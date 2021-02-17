@@ -1,0 +1,17 @@
+---
+# dkclt_config_file not idempotence
+- name: create dkmon cfg file
+  template:
+    src: dkclt.cfg.j2
+    dest: "{{ dkclt_config_file }}"
+    owner: dkclt
+    group: dkclt
+    mode: 0644
+
+- name: create dkmon env file
+  template:
+    src: dkmon.j2
+    dest: /etc/default/dkmon
+    owner: root
+    group: root
+    mode: 0644

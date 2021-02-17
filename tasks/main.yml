@@ -1,0 +1,21 @@
+---
+# tasks file for ansible_distkontrol
+- include: install.yml
+  become: true
+  tags:
+    - distkontrol_install
+
+- include: configure.yml
+  become: true
+  tags:
+    - distkontrol_configure
+
+- name: ensure dkclt service is started and enabled
+  become: true
+  systemd:
+    daemon_reload: true
+    name: dkclt
+    state: started
+    enabled: true
+  tags:
+    - distkontrol_run

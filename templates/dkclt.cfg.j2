@@ -1,0 +1,13 @@
+## Ansible managed
+[Settings]
+ManualHubs={% for item in dkclt_hubs %}{{ item }}{% if not loop.last %},{%endif%}
+{% endfor%}
+
+[General]
+AutoFind=0
+[AutoShare]
+All=1
+10000000968467cc=0
+10000000968467cc.319.8226.11312=0
+10000000968467cc.319.8226=0
+10000000968467cc.11312=0

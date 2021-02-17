@@ -1,0 +1,143 @@
+---
+- name: Assert usage debian
+  assert:
+    that: ansible_os_family == "Debian"
+    msg: "This module only works with apt"
+
+
+- name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  async: 3600
+  poll: 30
+
+- name: apt usbutils
+  apt:
+    name: usbutils
+
+- name: apt linux-tools-generic
+  apt:
+    name: linux-tools-generic
+
+- name: apt snmp
+  apt:
+    name: snmp
+
+#- name: vhci_hcd
+#  community.general.modprobe:
+#    name: vhci_hcd
+#    state: present
+
+
+- name: Create the node_exporter group
+  group:
+    name: "{{ _node_exporter_system_group }}"
+    state: present
+    system: true
+  when: _node_exporter_system_group != "root"
+
+- name: Create the node_exporter user
+  user:
+    name: "{{ _node_exporter_system_user }}"
+    groups: "{{ _node_exporter_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    create_home: false
+    home: /
+  when: _node_exporter_system_user != "root"
+
+
+- name: create dkclt system group
+  group:
+    name: dkclt
+    system: true
+    state: present
+
+- name: create dkclt system user
+  user:
+    name: dkclt
+    system: true
+    shell: "/usr/sbin/nologin"
+    groups: dkclt,{{ _node_exporter_system_group }}
+    createhome: false
+
+- name: create dkclt configuration directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: dkclt
+    mode: 0770
+  with_items:
+    - "{{ dkclt_config_dir }}"
+
+- name: Create textfile collector dir
+  file:
+    path: "{{ node_exporter_textfile_dir }}"
+    state: directory
+    owner: "{{ _node_exporter_system_user }}"
+    group: "{{ _node_exporter_system_group }}"
+    recurse: false
+    mode: u+rwX,g+rwX,o=rX
+  when: node_exporter_textfile_dir | length > 0
+
+- block:
+    - name: download dkclt to local folder
+      become: false
+      get_url:
+        url: http://www.distkontrol.ru/usbclient/dkclientx86_64
+        dest: /tmp/
+      register: _download_bin
+      until: _download_bin is succeeded
+      retries: 5
+      delay: 2
+      delegate_to: localhost
+      check_mode: false
+
+    - name: propagate dkclt binaries
+      copy:
+        src: "/tmp/{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
+        mode: 0755
+        owner: dkclt
+        group: dkclt
+      with_items:
+        - dkclientx86_64
+      notify:
+        - restart dkclt
+
+- name: create systemd service unit
+  template:
+    src: dkclt.service.j2
+    dest: /lib/systemd/system/dkclt.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart dkclt
+
+- name: copy dkmon script
+  copy:
+    src: dkmon.sh
+    dest: /usr/local/sbin/dkmon.sh
+    owner: dkclt
+    group: dkclt
+    mode: 0755
+
+- name: copy dkmon_snmp script
+  copy:
+    src: dkmon_snmp.sh
+    dest: /usr/local/sbin/dkmon_snmp.sh
+    owner: dkclt
+    group: dkclt
+    mode: 0755
+
+- name: copy dkmon cron file
+  copy:
+    src: dkmon
+    dest: /etc/cron.d/dkmon
+    owner: root
+    group: root
+    mode: 0644

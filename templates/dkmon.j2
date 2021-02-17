@@ -1,0 +1,3 @@
+DKMON_IP='{% for item in dkclt_dkmon_ip %}{{ item }}{% if not loop.last %} {%endif%}{% endfor%}'
+DKMON_COMMUNITY='{{ dkclt_dkmon_community }}'
+DKMON_TEXTFILE_DIR='{{ node_exporter_textfile_dir }}'

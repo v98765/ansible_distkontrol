@@ -1,0 +1,14 @@
+---
+# defaults file for ansible_distkontrol
+_node_exporter_system_group: "node-exp"
+_node_exporter_system_user: "{{ _node_exporter_system_group }}"
+node_exporter_textfile_dir: "/var/lib/node_exporter"
+dkclt_config_dir: "/etc/dkclt"
+dkclt_config_file: "/etc/dkclt/dkclt.cfg"
+dkclt_hubs:
+  - "192.168.163.13:6565"
+  - "192.168.163.14:6565"
+dkclt_dkmon_community: "public"
+dkclt_dkmon_ip:
+  - "192.168.163.13"
+  - "192.168.163.14"

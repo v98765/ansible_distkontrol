@@ -1,0 +1,15 @@
+[Unit]
+Description=dkclt usb client
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=dkclt
+ExecStart=/usr/local/bin/dkclientx86_64 --config={{ dkclt_config_file }} --autofind-off
+SyslogIdentifier=dkclt
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

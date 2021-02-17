@@ -1,0 +1,8 @@
+---
+# handlers file for ansible_distkontrol
+- name: restart dkclt
+  become: true
+  systemd:
+    daemon_reload: true
+    name: dkclt
+    state: restarted
