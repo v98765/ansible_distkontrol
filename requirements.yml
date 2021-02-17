@@ -1,4 +1,4 @@
 - src: https://github.com/v98765/ansible_distkontrol
-  version: master
+  version: main
   name: ansible_distkontrol
 - src: cloudalchemy.node-exporter
