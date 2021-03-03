@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include ansible_distkontrol"
+    - name: "Include v98765_distkontrol"
       include_role:
-        name: "ansible_distkontrol"
+        name: "v98765_distkontrol"

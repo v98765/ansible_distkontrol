@@ -1,5 +1,5 @@
 ---
-# handlers file for ansible_distkontrol
+# handlers file for v98765_distkontrol
 - name: restart dkclt
   become: true
   systemd:

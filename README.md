@@ -40,7 +40,7 @@ Example Playbook
   connection: ssh
   roles:
     - cloudalchemy.node-exporter
-    - ansible_distkontrol
+    - v98765_distkontrol
 ```
 
 License
