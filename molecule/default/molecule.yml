@@ -2,10 +2,11 @@
 dependency:
   name: galaxy
 driver:
-  name: podman
+  name: docker
 platforms:
-  - name: ubuntu
-    image: geerlingguy/docker-ubuntu2004-ansible
+  - name: instance_distkontrol
+    privileged: true
+    image: staticdev/docker-ubuntu2010-ansible:latest
     tmpfs:
       - /run
       - /tmp
