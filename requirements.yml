@@ -1,4 +1,3 @@
-- src: https://github.com/v98765/v98765_distkontrol
-  version: main
-  name: v98765_distkontrol
-- src: cloudalchemy.node_exporter
+---
+roles:
+  - src: https://github.com/v98765/v98765_exporter_node
